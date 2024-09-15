@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+  <head class="h-full bg-white">
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,8 +25,10 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   </head>
-  <body>
+  <body class="h-full">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
@@ -39,5 +41,32 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+<!--JAVASCRIPT CODE-->
+<script>
+  var swiper = new Swiper(".multiple-slide-carousel", {
+    loop: true,
+    slidesPerView: 3,
+    spaceBetween: 20,
+    navigation: {
+      nextEl: ".multiple-slide-carousel .swiper-button-next",
+      prevEl: ".multiple-slide-carousel .swiper-button-prev",
+    },
+    breakpoints: {
+     1920: {
+         slidesPerView: 3,
+         spaceBetween: 30
+     },
+     1028: {
+         slidesPerView: 2,
+         spaceBetween: 30
+     },
+     990: {
+         slidesPerView: 1,
+         spaceBetween: 0
+     }
+   }
+  });
+ </script>
+
   </body>
 </html>
