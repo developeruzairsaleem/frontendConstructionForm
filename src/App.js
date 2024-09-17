@@ -10,29 +10,16 @@ import Register from './components/Register/Register';
 import PlanManagement from './components/PlanManagement/PlanManagement';
 import PaymentPlan from './components/PaymentPlan/PaymentPlan';
 import PlanPage from './components/PlanPage/PlanPage';
+// import { DataContext, DataProvider } from './context/DataContext';
 
 import { useEffect, useState } from 'react';
 
 function App() {
   const [visibleFields, setVisibleFields]=  useState([true])
   const [selectedPlan, setSelectedPlan] = useState({})
-  useEffect(()=>{
-      (_=>{
-
-        const chosenData = JSON.parse(localStorage.getItem('chosenData'));
-        if(chosenData){
-          setData(chosenData)
-          console.log(chosenData, 'chosen')
-          setVisibleFields([true,true,true,true,true,true])
-        }
-
-      })()
-
-
-  },[])
-
   
-
+  
+  
   const [data, setData]=useState({
     size:0,
     budgetPlanned:null,
@@ -46,15 +33,40 @@ function App() {
 
 
 
+    useEffect(()=>{
+        (_=>{
+  
+          const chosenData = JSON.parse(localStorage.getItem('chosenData'));
+          console.log('running')
+          if(chosenData){
+            setData(chosenData)
+            console.log(chosenData, 'chosen')
+            setVisibleFields([true,true,true,true,true,true])
+            
+          }
+  
+          const chosenPlan = JSON.parse(localStorage.getItem('plan'))
+          if(chosenPlan){
+            setSelectedPlan(chosenPlan)
+            console.log('chosen plan', chosenPlan)
+  
+          }
+  
+        })()
+  
+  
+    },[])
   // visible fields in the application
   
   return (
+    <div>
+
       <Routes>
         <Route  path="/booking" element={<Booking visibleFields={visibleFields} setVisibleFields={setVisibleFields} data={data} setData={setData}/>} />
         <Route path="/admin" element={<Admin/>} />
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
-          <Route path="/payment" element={<PaymentPlan/>} />
+          <Route path="/payment" element={<PaymentPlan plan={selectedPlan} data={data}/>} />
           <Route path="/plan" element={<PlanPage data={data} visibleFields={visibleFields} setVisibleFields={setVisibleFields} selectedPlan={selectedPlan} setSelectedPlan={setSelectedPlan} setData={setData}/>} />
           <Route path="/admin/*" element={<Admin />}>
             <Route path="zone" element={<ZoneManagement/>} />
@@ -62,6 +74,7 @@ function App() {
             <Route path="plan" element={<PlanManagement/>} />
           </Route>
       </Routes>  
+    </div>
   );
 }
 

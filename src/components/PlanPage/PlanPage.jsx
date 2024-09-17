@@ -5,35 +5,27 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { getAllPlans } from '../../api/internal';
 import {useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ScaleLoader } from 'react-spinners';
+import { SampleNextArrow, SamplePrevArrow, overrideForLoader } from './utils';
 
-function SampleNextArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{  ...style, display: "block", right: "-23px", zIndex: 10,backgroundColor:'#02413a', borderRadius:'50%', padding:'5px', width:'30px', height:'30px' }}  // Add positioning and background
-      onClick={onClick}
-    />
-      
-  );
-}
 
-function SamplePrevArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: "block", left: "-23px", zIndex: 10,backgroundColor:'#02413a', borderRadius:'50%', padding:'5px', width:'30px', height:'30px' }}  // Add positioning and background
-      onClick={onClick}
-    />
-  );
-}
+
 
 function PlanPage({data,setData, selectedPlan, setSelectedPlan}) {
 
+
+    // Plan Page state goes here
     const[plans, setPlans] = useState([]);
+    const[gettingPlans, setGettingPlans]= useState(false)
+    const navigate = useNavigate()
     
+
+
+ 
     // select zone from the pervious zones
+
+
     const selectedZone=(()=>{
    return data?.selectedZone?.data?.filter((item)=>{
 
@@ -60,10 +52,18 @@ function PlanPage({data,setData, selectedPlan, setSelectedPlan}) {
   // get all plans
     useEffect(()=>{     
             (async()=>{
-        
-                const response = await getAllPlans()
-                setPlans(response?.data?.data||[])
-        
+                try{
+                    setGettingPlans(true)
+                    const response = await getAllPlans()
+                    setPlans(response?.data?.data||[])
+            
+
+                }catch(err){
+                    console.log(err)
+                }
+                finally{
+                    setGettingPlans(false)
+                }
             })()
         },[])
 
@@ -102,11 +102,34 @@ function PlanPage({data,setData, selectedPlan, setSelectedPlan}) {
             ]
         };
 
+
+
+
+
+        
+
+        
   return (
 
-    <div className='lg:max-w-screen-lg md:max-w-screen-md sm:max-w-screen-sm xs:max-w-xs  px-4  m-auto'>
+      <div className='lg:max-w-screen-lg md:max-w-screen-md sm:max-w-screen-sm xs:max-w-xs  px-4  m-auto'>
         <h1 className='text-center font-bold text-3xl my-5'>Choose your plan</h1>
-    <div className="slider-container">
+       {
+            <div className={`bg-opacity-70 bg-gray-300 absolute top-0 left-0 z-50 flex items-center justify-center w-screen h-screen ${gettingPlans?'':'hidden'}`}>
+<ScaleLoader
+color={'#fed4a5'}
+loading={true}
+cssOverride={overrideForLoader}
+size={300}
+aria-label="Loading Spinner"
+data-testid="loader"
+/>
+            </div>
+
+    }
+    {
+        !gettingPlans&&plans.length?(
+
+            <div className="slider-container">
       <Slider {...settings}>
       {plans.map((plan) => (
 
@@ -121,7 +144,8 @@ function PlanPage({data,setData, selectedPlan, setSelectedPlan}) {
             <button onClick={()=>{
                 setSelectedPlan(plan)
                 localStorage.setItem('plan',JSON.stringify(plan))
-                }} className="w-full bg-[#02413a] bg-opacity-20 text-[#02413a] py-3 mb-8  font-semibold text-md rounded-md hover:bg-opacity-30 transition">
+                navigate('/payment')
+            }} className="w-full bg-[#02413a] bg-opacity-20 text-[#02413a] py-3 mb-8  font-semibold text-md rounded-md hover:bg-opacity-30 transition">
               Select Plan
             </button>
             <div className=" text-[#02413a] text-sm">
@@ -136,8 +160,12 @@ function PlanPage({data,setData, selectedPlan, setSelectedPlan}) {
         ))}
       </Slider>
     </div>
+    ):!plans.length&&!gettingPlans?(
+        <h1 className='text-3xl font-bold h-screen text-center w-full flex justify-center items-center' >No Plans Available Currently</h1>
+    ):''
+    }
 </div>
-  );
+  )
 }
 
 export default PlanPage;

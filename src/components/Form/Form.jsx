@@ -90,7 +90,7 @@ const Form = ({data, setData, visibleFields, setVisibleFields}) => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit ipsam
             reiciendis quos magnam aut nam!
           </p>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {sizeConst.map((s) => (
               <div key={s} className={`${boxStyle} ${data?.size===  s ? selectedStyle : ""}`} onClick={
                 () => {
